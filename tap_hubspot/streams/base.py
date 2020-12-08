@@ -30,7 +30,6 @@ class Resource(Stream):
             public_object_search_request.limit = PAGE_MAX_SIZE
             public_object_search_request.after = after
             page = resource.search_api.do_search(public_object_search_request)
-            print(page)
             results.extend(page.results)
             if page.paging is None:
                 break

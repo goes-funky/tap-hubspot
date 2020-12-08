@@ -17,16 +17,34 @@
     "properties": {
       "type": "object",
       "properties": {
-        "price": {
+        "amount": {
           "type": [
             "null",
             "number"
           ]
         },
-        "hs_object_id": {
+        "hs_product_id": {
           "type": [
             "null",
             "integer"
+          ]
+        },
+        "hs_recurring_billing_period": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "quantity": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "recurringbillingfrequency": {
+          "type": [
+            "null",
+            "string"
           ]
         },
         "name": {

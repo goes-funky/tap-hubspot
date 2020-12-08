@@ -1,9 +1,12 @@
-from hubspot.crm.products import Filter, FilterGroup, PublicObjectSearchRequest
+from hubspot.crm.line_items import Filter, FilterGroup, PublicObjectSearchRequest
 
 from .base import Resource
 
 
-class Product(Resource):
+class LineItem(Resource):
+    # code is the same as the product but the
+    # Filter, FilterGroup, PublicObjectSearchRequest are imported from
+    # a different package
 
     def get_data(self, value):
         filter = Filter(property_name="createdate", operator="GT", value=value)

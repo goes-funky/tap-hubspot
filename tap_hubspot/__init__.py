@@ -21,8 +21,7 @@ from singer import (transform,
                     Transformer, _transform_datetime)
 from hubspot import HubSpot
 from .transform import transform_row
-from .streams.base import Stream
-from .streams.product import Product
+from .streams import Product, LineItem, Stream
 
 LOGGER = singer.get_logger()
 SESSION = requests.Session()
@@ -923,6 +922,7 @@ STREAMS = [
     Stream('deal_pipelines', sync_deal_pipelines, ['pipelineId'], None, 'FULL_TABLE'),
     Stream('engagements', sync_engagements, ["engagement_id"], 'lastUpdated', 'FULL_TABLE'),
     Product('products', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT.crm.products),
+    Product('line_items', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT.crm.line_items),
 ]
 
 
