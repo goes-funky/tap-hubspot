@@ -11,12 +11,13 @@ setup(name='tap-hubspot',
       py_modules=['tap_hubspot'],
       install_requires=[
           'attrs==16.3.0',
-          'singer-python==5.1.1',
+          'singer-python==5.5.1',
           'requests==2.20.0',
           'backoff==1.3.2',
           'requests_mock==1.3.0',
+          'hubspot-api-client==3.4.2'
       ],
-      extras_require= {
+      extras_require={
           'dev': [
               'pylint==2.5.3',
               'nose==1.3.7',
@@ -27,7 +28,7 @@ setup(name='tap-hubspot',
           tap-hubspot=tap_hubspot:main
       ''',
       packages=['tap_hubspot'],
-      package_data = {
+      package_data={
           'tap_hubspot/schemas': [
               "campaigns.json",
               "companies.json",
@@ -43,4 +44,4 @@ setup(name='tap-hubspot',
           ],
       },
       include_package_data=True,
-)
+      )

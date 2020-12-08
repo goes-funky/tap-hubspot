@@ -1,0 +1,41 @@
+{
+  "type": "object",
+  "properties": {
+    "created_at": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date-time"
+    },
+    "id": {
+      "type": [
+        "null",
+        "integer"
+      ]
+    },
+    "properties": {
+      "type": "object",
+      "properties": {
+        "price": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "hs_object_id": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "name": {
+          "type": [
+            "null",
+            "string"
+          ]
+        }
+      }
+    }
+  }
+}
