@@ -27,7 +27,7 @@ setup(name='tap-hubspot',
           [console_scripts]
           tap-hubspot=tap_hubspot:main
       ''',
-      packages=['tap_hubspot'],
+      packages=['tap_hubspot', 'tap_hubspot.streams'],
       package_data={
           'tap_hubspot/schemas': [
               "campaigns.json",
