@@ -7,7 +7,8 @@ class Deal(Resource):
     # code is the same as the product but the
     # Filter, FilterGroup, PublicObjectSearchRequest are imported from
     # a different package
-    dynamic_columns = ["hs_date_entered", "hs_date_exited"]
+    dynamic_columns = ["hs_date_entered_", "hs_date_exited_", "hs_time_in_"]
+    include_parameters = ["hs_date_entered_closedwon", "hs_date_exited_closedwon"]
 
     def get_data(self, value):
         filter = Filter(property_name="createdate", operator="GT", value=value)
@@ -18,7 +19,7 @@ class Deal(Resource):
 
         properties = self.extract_inner_properties()
         public_object_search_request.properties = properties
-        public_object_search_request.properties = ["hs_date_entered_closedwon"] + list(properties)
+        public_object_search_request.properties = self.include_parameters + list(properties)
         return self.fetch_all(self.hubspot_client.crm.deals, public_object_search_request)
 
     def extract_inner_properties(self):
@@ -29,4 +30,12 @@ class Deal(Resource):
                 return inner_properties["properties"].keys()
         return []
 
+    def convert_obj(self, obj):
+        properties = obj["properties"]
+        for dynamic_col in self.dynamic_columns:
+            obj[dynamic_col[:-1]] = [{"value": properties[k],
+                                      "id": k.replace(dynamic_col, "")}
+                                     for k in properties if
+                                     k.startswith(dynamic_col) and k not in self.include_parameters]
 
+        return obj

@@ -873,12 +873,14 @@ def sync_entity(STATE, ctx):
     time_extracted = utils.now()
 
     for row in data:
-        created_at = row.to_dict()[bookmark_key]
+        dict_row = row.to_dict()
+        stream.convert_obj(dict_row)
+        created_at = dict_row[bookmark_key]
         if created_at >= max_bk_value:
             max_bk_value = created_at
 
         if created_at >= start:
-            record = transform_row(row.to_dict(), schema)
+            record = transform_row(dict_row, schema)
             singer.write_record(stream_id, record, catalog.get('stream_alias'), time_extracted=time_extracted)
 
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(max_bk_value.replace(tzinfo=pytz.UTC)))
