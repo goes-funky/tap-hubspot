@@ -17,44 +17,41 @@
     "properties": {
       "type": "object",
       "properties": {
-        "closedate": {
+        "amount": {
           "type": [
             "null",
-            "string"
-          ],
-          "format": "date-time"
+            "number"
+          ]
         },
-        "hs_lastmodifieddate": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "format": "date-time"
-        },
-        "hubspot_owner_id": {
+        "hs_product_id": {
           "type": [
             "null",
             "integer"
           ]
         },
-        "dealname": {
+        "hs_recurring_billing_period": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "quantity": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "recurringbillingfrequency": {
           "type": [
             "null",
             "string"
           ]
         },
-        "dealstage": {
+        "name": {
           "type": [
             "null",
             "string"
           ]
-        },
-        "pipeline": {
-          "type": [
-            "null",
-            "string"
-          ]
-
         }
       }
     }

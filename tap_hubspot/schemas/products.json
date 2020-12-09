@@ -17,44 +17,23 @@
     "properties": {
       "type": "object",
       "properties": {
-        "closedate": {
+        "price": {
           "type": [
             "null",
-            "string"
-          ],
-          "format": "date-time"
+            "number"
+          ]
         },
-        "hs_lastmodifieddate": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "format": "date-time"
-        },
-        "hubspot_owner_id": {
+        "hs_object_id": {
           "type": [
             "null",
             "integer"
           ]
         },
-        "dealname": {
+        "name": {
           "type": [
             "null",
             "string"
           ]
-        },
-        "dealstage": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "pipeline": {
-          "type": [
-            "null",
-            "string"
-          ]
-
         }
       }
     }
