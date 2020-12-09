@@ -14,111 +14,11 @@
         "integer"
       ]
     },
-    "hs_date_entered": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "value": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          }
-        }
-      }
-    },
-    "hs_date_exited": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "value": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          }
-        }
-      }
-    },
-    "hs_time_in": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": [
-              "null",
-              "string"
-            ]
-          },
-          "value": {
-            "type": [
-              "null",
-              "string"
-            ],
-            "format": "date-time"
-          }
-        }
-      }
-    },
-    "properties": {
-      "type": "object",
-      "properties": {
-        "closedate": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "format": "date-time"
-        },
-        "hs_lastmodifieddate": {
-          "type": [
-            "null",
-            "string"
-          ],
-          "format": "date-time"
-        },
-        "hubspot_owner_id": {
-          "type": [
-            "null",
-            "integer"
-          ]
-        },
-        "dealname": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "dealstage": {
-          "type": [
-            "null",
-            "string"
-          ]
-        },
-        "pipeline": {
-          "type": [
-            "null",
-            "string"
-          ]
-        }
-      }
+    "archived": {
+      "type": [
+        "null",
+        "boolean"
+      ]
     }
   }
 }
