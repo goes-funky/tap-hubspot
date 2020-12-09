@@ -104,6 +104,8 @@ ENDPOINTS = {
     "products": "/crm/v3/objects/products"
 }
 
+v3_entities_with_dynamic_fields = ["deals"]
+
 
 def get_start(state, tap_stream_id, bookmark_key):
     current_bookmark = singer.get_bookmark(state, tap_stream_id, bookmark_key)
@@ -203,6 +205,10 @@ def load_associated_company_schema():
 
 
 def load_schema(entity_name):
+
+    if entity_name in v3_entities_with_dynamic_fields:
+        return load_schema_for_v3_entity(entity_name)
+
     schema = utils.load_json(get_abs_path('schemas/{}.json'.format(entity_name)))
     if entity_name in ["contacts", "companies"]:
         custom_schema = get_custom_schema(entity_name)
@@ -848,6 +854,21 @@ def sync_engagements(STATE, ctx):
     return STATE
 
 
+def load_schema_for_v3_entity(entity_name):
+    schema = utils.load_json(get_abs_path('schemas/{}.json'.format(entity_name)))
+    custom_schema = get_custom_schema(entity_name)
+    # Move properties to top level
+    custom_schema_top_level = {k: v["properties"]["value"] for k, v in custom_schema.items()}
+
+    schema['properties'].update(custom_schema_top_level)
+
+    # Make properties_versions selectable and share the same schema.
+    versions_schema = utils.load_json(get_abs_path('schemas/versions.json'))
+    schema['properties']['properties_versions'] = versions_schema
+
+    return schema
+
+
 def sync_entity(STATE, ctx):
     catalog = ctx.get_catalog_from_id(singer.get_currently_syncing(STATE))
     stream = ctx.get_current_selected_stream()
@@ -874,7 +895,7 @@ def sync_entity(STATE, ctx):
 
     for row in data:
         dict_row = row.to_dict()
-        stream.convert_obj(dict_row)
+        dict_row = stream.convert_obj(dict_row)
         created_at = dict_row[bookmark_key]
         if created_at >= max_bk_value:
             max_bk_value = created_at
@@ -882,7 +903,6 @@ def sync_entity(STATE, ctx):
         if created_at >= start:
             record = transform_row(dict_row, schema)
             singer.write_record(stream_id, record, catalog.get('stream_alias'), time_extracted=time_extracted)
-
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(max_bk_value.replace(tzinfo=pytz.UTC)))
     singer.write_state(STATE)
     return STATE

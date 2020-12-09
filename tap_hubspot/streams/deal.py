@@ -24,18 +24,7 @@ class Deal(Resource):
 
     def extract_inner_properties(self):
         if "properties" in self.schema:
-            outer_properties = self.schema["properties"]
-            if "properties" in outer_properties:
-                inner_properties = outer_properties["properties"]
-                return inner_properties["properties"].keys()
+            outer_properties = self.schema["properties"].keys()
+            return outer_properties
         return []
 
-    def convert_obj(self, obj):
-        properties = obj["properties"]
-        for dynamic_col in self.dynamic_columns:
-            obj[dynamic_col[:-1]] = [{"value": properties[k],
-                                      "id": k.replace(dynamic_col, "")}
-                                     for k in properties if
-                                     k.startswith(dynamic_col) and k not in self.include_parameters]
-
-        return obj
