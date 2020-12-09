@@ -28,3 +28,5 @@ class Deal(Resource):
                 inner_properties = outer_properties["properties"]
                 return inner_properties["properties"].keys()
         return []
+
+

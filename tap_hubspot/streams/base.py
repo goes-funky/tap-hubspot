@@ -17,6 +17,7 @@ class Stream(object):
     def set_schema(self, schema):
         self.schema = schema
 
+
 @attr.s
 class Resource(Stream):
     hubspot_client = attr.ib(default=None)
@@ -41,3 +42,6 @@ class Resource(Stream):
             after = page.paging.next.after
 
         return results
+
+    def convert_obj(self, obj):
+        return obj
