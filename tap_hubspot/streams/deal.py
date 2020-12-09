@@ -28,3 +28,10 @@ class Deal(Resource):
             return outer_properties
         return []
 
+    def convert_obj(self, obj):
+        new_obj = obj["properties"]
+        new_obj["id"] = obj["id"]
+        new_obj["archived"] = obj["archived"]
+        new_obj["created_at"] = obj["created_at"]
+        return new_obj
+
