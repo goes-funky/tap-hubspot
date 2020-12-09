@@ -11,4 +11,4 @@ class Product(Resource):
         public_object_search_request = PublicObjectSearchRequest(
             filter_groups=[filter_group]
         )
-        return self.fetch_all(self.object_resource, public_object_search_request)
+        return self.fetch_all(self.hubspot_client.crm.products, public_object_search_request)

@@ -21,11 +21,11 @@ from singer import (transform,
                     Transformer, _transform_datetime)
 from hubspot import HubSpot
 from .transform import transform_row
-from .streams import Product, LineItem, Stream
+from .streams import Product, LineItem, Stream, Deal
 
 LOGGER = singer.get_logger()
 SESSION = requests.Session()
-HUBSPOT = HubSpot()
+HUBSPOT_CLIENT = HubSpot()
 
 
 class InvalidAuthException(Exception):
@@ -204,7 +204,7 @@ def load_associated_company_schema():
 
 def load_schema(entity_name):
     schema = utils.load_json(get_abs_path('schemas/{}.json'.format(entity_name)))
-    if entity_name in ["contacts", "companies", "deals"]:
+    if entity_name in ["contacts", "companies"]:
         custom_schema = get_custom_schema(entity_name)
         # Move properties to top level
         custom_schema_top_level = {'property_{}'.format(k): v for k, v in custom_schema.items()}
@@ -853,6 +853,7 @@ def sync_entity(STATE, ctx):
     stream = ctx.get_current_selected_stream()
     stream_id = stream.tap_stream_id
     schema = load_schema(stream_id)
+    stream.set_schema(schema)
     bookmark_key = stream.replication_key
     singer.write_schema(stream_id, schema, stream.key_properties, [bookmark_key], catalog.get('stream_alias'))
 
@@ -867,10 +868,6 @@ def sync_entity(STATE, ctx):
 
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(start.replace(tzinfo=pytz.UTC)))
     singer.write_state(STATE)
-
-    if stream.object_resource is None:
-        singer.logger.log_critical("Error while loading the data")
-        raise Exception("Please provide resource object")
 
     data = stream.get_data(str(int(start.timestamp() * 1000)))
     time_extracted = utils.now()
@@ -918,11 +915,12 @@ STREAMS = [
     Stream('contact_lists', sync_contact_lists, ["listId"], 'updatedAt', 'FULL_TABLE'),
     Stream('contacts', sync_contacts, ["vid"], 'versionTimestamp', 'FULL_TABLE'),
     Stream('companies', sync_companies, ["companyId"], 'hs_lastmodifieddate', 'FULL_TABLE'),
-    Stream('deals', sync_deals, ["dealId"], 'hs_lastmodifieddate', 'FULL_TABLE'),
+    # Stream('deals', sync_deals, ["dealId"], 'hs_lastmodifieddate', 'FULL_TABLE'),
     Stream('deal_pipelines', sync_deal_pipelines, ['pipelineId'], None, 'FULL_TABLE'),
     Stream('engagements', sync_engagements, ["engagement_id"], 'lastUpdated', 'FULL_TABLE'),
-    Product('products', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT.crm.products),
-    Product('line_items', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT.crm.line_items),
+    Product('products', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    LineItem('line_items', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    Deal('deals', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
 ]
 
 
@@ -1044,6 +1042,7 @@ def discover_schemas():
     for stream in STREAMS:
         LOGGER.info('Loading schema for %s', stream.tap_stream_id)
         schema, mdata = load_discovered_schema(stream)
+        stream.set_schema(schema)
         result['streams'].append({'stream': stream.tap_stream_id,
                                   'tap_stream_id': stream.tap_stream_id,
                                   'schema': schema,
@@ -1079,7 +1078,7 @@ def main_impl():
     STATE = {}
     if CONFIG['token_expires'] is None or CONFIG['token_expires'] < datetime.datetime.utcnow():
         acquire_access_token_from_refresh_token()
-        HUBSPOT.access_token = CONFIG['access_token']
+        HUBSPOT_CLIENT.access_token = CONFIG['access_token']
 
     if args.state:
         STATE.update(args.state)

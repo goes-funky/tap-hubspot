@@ -1,35 +1,60 @@
 {
   "type": "object",
   "properties": {
-    "portalId": {
-      "type": ["null", "integer"]
+    "created_at": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date-time"
     },
-    "dealId": {
-      "type": ["null", "integer"]
+    "id": {
+      "type": [
+        "null",
+        "integer"
+      ]
     },
-    "isDeleted": {
-      "type": ["null", "boolean"]
-    },
-    "associations": {
-      "type": ["null", "object"],
+    "properties": {
+      "type": "object",
       "properties": {
-        "associatedVids": {
-          "type": ["null", "array"],
-          "items": {
-            "type": ["null", "integer"]
-          }
+        "closedate": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "format": "date-time"
         },
-        "associatedCompanyIds": {
-          "type": ["null", "array"],
-          "items": {
-            "type": ["null", "integer"]
-          }
+        "hs_lastmodifieddate": {
+          "type": [
+            "null",
+            "string"
+          ],
+          "format": "date-time"
         },
-        "associatedDealIds": {
-          "type": ["null", "array"],
-          "items": {
-            "type": ["null", "integer"]
-          }
+        "hubspot_owner_id": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        },
+        "dealname": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "dealstage": {
+          "type": [
+            "null",
+            "string"
+          ]
+        },
+        "pipeline": {
+          "type": [
+            "null",
+            "string"
+          ]
+
         }
       }
     }

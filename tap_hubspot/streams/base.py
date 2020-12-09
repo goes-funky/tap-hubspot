@@ -11,11 +11,16 @@ class Stream(object):
     key_properties = attr.ib()
     replication_key = attr.ib()
     replication_method = attr.ib()
-    object_resource = attr.ib(default=None)
 
+    schema = {}
+
+    def set_schema(self, schema):
+        self.schema = schema
 
 @attr.s
 class Resource(Stream):
+    hubspot_client = attr.ib(default=None)
+
     @abc.abstractmethod
     def get_data(self, value):
         return []
