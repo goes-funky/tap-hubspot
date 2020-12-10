@@ -26,9 +26,8 @@ class Resource(Stream):
     def get_data(self, value):
         return []
 
-    @staticmethod
-    def fetch_all(resource, public_object_search_request, **kwargs):
-
+    def fetch_all(self, resource, public_object_search_request, **kwargs):
+        public_object_search_request.properties = list(self.extract_inner_properties())
         results = []
         after = None
 
@@ -45,3 +44,11 @@ class Resource(Stream):
 
     def convert_obj(self, obj):
         return obj
+
+    def extract_inner_properties(self):
+        if "properties" in self.schema:
+            outer_properties = self.schema["properties"]
+            if "properties" in outer_properties:
+                inner_properties = outer_properties["properties"]
+                return list(inner_properties["properties"].keys())
+        return []
