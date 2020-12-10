@@ -32,7 +32,7 @@
         "hs_recurring_billing_period": {
           "type": [
             "null",
-            "integer"
+            "string"
           ]
         },
         "quantity": {
