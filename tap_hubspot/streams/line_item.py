@@ -13,5 +13,4 @@ class LineItem(Resource):
         public_object_search_request = PublicObjectSearchRequest(
             filter_groups=[filter_group]
         )
-        public_object_search_request.properties = list(self.extract_inner_properties())
         return self.fetch_all(self.hubspot_client.crm.line_items, public_object_search_request)

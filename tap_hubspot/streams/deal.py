@@ -16,10 +16,6 @@ class Deal(Resource):
         public_object_search_request = PublicObjectSearchRequest(
             filter_groups=[filter_group]
         )
-
-        properties = self.extract_inner_properties()
-        public_object_search_request.properties = properties
-        public_object_search_request.properties = self.include_parameters + list(properties)
         return self.fetch_all(self.hubspot_client.crm.deals, public_object_search_request)
 
     def extract_inner_properties(self):
