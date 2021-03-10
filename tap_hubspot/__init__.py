@@ -20,6 +20,8 @@ from singer import (transform,
                     UNIX_MILLISECONDS_INTEGER_DATETIME_PARSING,
                     Transformer, _transform_datetime)
 from hubspot import HubSpot
+
+from tap_hubspot.streams.deal_by_companies import DealByCompany
 from .transform import transform_row
 from .streams import Product, LineItem, Stream, Deal
 
@@ -205,7 +207,6 @@ def load_associated_company_schema():
 
 
 def load_schema(entity_name):
-
     if entity_name in v3_entities_with_dynamic_fields:
         return load_schema_for_v3_entity(entity_name)
 
@@ -871,6 +872,7 @@ def load_schema_for_v3_entity(entity_name):
 
 def sync_entity(STATE, ctx):
     catalog = ctx.get_catalog_from_id(singer.get_currently_syncing(STATE))
+
     stream = ctx.get_current_selected_stream()
     stream_id = stream.tap_stream_id
     schema = load_schema(stream_id)
@@ -889,20 +891,22 @@ def sync_entity(STATE, ctx):
 
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(start.replace(tzinfo=pytz.UTC)))
     singer.write_state(STATE)
-
     data = stream.get_data(str(int(start.timestamp() * 1000)))
     time_extracted = utils.now()
 
     for row in data:
         dict_row = row.to_dict()
         dict_row = stream.convert_obj(dict_row)
-        created_at = dict_row[bookmark_key]
-        if created_at >= max_bk_value:
-            max_bk_value = created_at
+        created_at = None
+        if stream.replication_key_in_obj:
+            created_at = dict_row[bookmark_key]
+            if created_at >= max_bk_value:
+                max_bk_value = created_at
 
-        if created_at >= start:
+        if not stream.replication_key_in_obj or created_at >= start:
             record = transform_row(dict_row, schema)
             singer.write_record(stream_id, record, catalog.get('stream_alias'), time_extracted=time_extracted)
+
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(max_bk_value.replace(tzinfo=pytz.UTC)))
     singer.write_state(STATE)
     return STATE
@@ -943,6 +947,7 @@ STREAMS = [
     Product('products', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     LineItem('line_items', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     Deal('deals', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    DealByCompany('deal_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
 ]
 
 

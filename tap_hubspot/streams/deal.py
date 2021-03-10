@@ -7,6 +7,10 @@ class Deal(Resource):
     # code is the same as the product but the
     # Filter, FilterGroup, PublicObjectSearchRequest are imported from
     # a different package
+    tap_stream_id = "deals"
+    key_properties = ["id"]
+    replication_key = "created_at"
+    replication_method = "INCREMENTAL"
 
     def get_data(self, value):
         filter = Filter(property_name="createdate", operator="GT", value=value)
@@ -18,8 +22,8 @@ class Deal(Resource):
 
     def extract_inner_properties(self):
         if "properties" in self.schema:
-            outer_properties = self.schema["properties"].keys()
-            return outer_properties
+            properties = self.schema["properties"].keys()
+            return properties
         return []
 
     def convert_obj(self, obj):
@@ -28,4 +32,3 @@ class Deal(Resource):
         new_obj["archived"] = obj["archived"]
         new_obj["created_at"] = obj["created_at"]
         return new_obj
-
