@@ -5,6 +5,7 @@ from hubspot.crm.associations import BatchInputPublicObjectId, PublicObjectId
 import hubspot
 
 from .deal import Deal
+import abc
 
 PAGE_MAX_SIZE = 100
 
@@ -16,7 +17,7 @@ class Associations(Resource):
     replication_key_in_obj = False
 
     def get_data(self, value):
-        first_resource = self.get_resource_company(self.first_resource_name)
+        first_resource = self.get_first_resource()
         data = first_resource.get_data(value)
         ids = self.extract_ids(data)
         chunks = self.chunks(ids, 100)
@@ -25,24 +26,22 @@ class Associations(Resource):
             batch_input_public_object_id = BatchInputPublicObjectId(
                 inputs=chunk
             )
-            results = self.fetch_all(self.hubspot_client.crm.deals, batch_input_public_object_id)
+            results = self.fetch_all(self.hubspot_client.crm.associations, batch_input_public_object_id)
             data.extend(results)
         return data
 
-    def get_resource_company(self, name):
-        dict_resource = {
-            "DEALS": Deal(hubspot_client=self.hubspot_client)
-        }
-        return dict_resource[name]
-
     def fetch_all(self, resource, public_object_search_request, **kwargs):
-        page = self.hubspot_client.crm.associations.batch_api.read(
-            "DEALS",
-            "COMPANIES",
+        page = resource.batch_api.read(
+            self.first_resource_name,
+            self.second_resource_name,
             batch_input_public_object_id=public_object_search_request
         )
 
         return page.results
+
+    @abc.abstractmethod
+    def get_first_resource(self):
+        return Deal(hubspot_client=self.hubspot_client)
 
     @staticmethod
     def extract_ids(data):
