@@ -6,13 +6,14 @@ PAGE_MAX_SIZE = 100
 
 @attr.s
 class Stream(object):
-    tap_stream_id = attr.ib()
-    sync = attr.ib()
-    key_properties = attr.ib()
-    replication_key = attr.ib()
-    replication_method = attr.ib()
+    tap_stream_id = attr.ib(default=None)
+    sync = attr.ib(default=None)
+    key_properties = attr.ib(default=["id"])
+    replication_key = attr.ib(default="created_at")
+    replication_method = attr.ib(default="INCREMENTAL")
 
     schema = {}
+    replication_key_in_obj = True
 
     def set_schema(self, schema):
         self.schema = schema
