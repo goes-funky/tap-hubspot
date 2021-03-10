@@ -25,7 +25,7 @@ class Associations(Resource):
             batch_input_public_object_id = BatchInputPublicObjectId(
                 inputs=chunk
             )
-            results = self.fetch_all(self.hubspot_client.crm.deals, batch_input_public_object_id)
+            results = self.fetch_all(self.hubspot_client.crm.associations, batch_input_public_object_id)
             data.extend(results)
         return data
 
@@ -36,9 +36,9 @@ class Associations(Resource):
         return dict_resource[name]
 
     def fetch_all(self, resource, public_object_search_request, **kwargs):
-        page = self.hubspot_client.crm.associations.batch_api.read(
-            "DEALS",
-            "COMPANIES",
+        page = resource.batch_api.read(
+            self.first_resource_name,
+            self.second_resource_name,
             batch_input_public_object_id=public_object_search_request
         )
 
