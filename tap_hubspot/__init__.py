@@ -489,7 +489,7 @@ def sync_companies(STATE, ctx):
     max_bk_value = start
     if CONTACTS_BY_COMPANY in ctx.selected_stream_ids:
         contacts_by_company_schema = load_schema(CONTACTS_BY_COMPANY)
-        singer.write_schema("contacts_by_company", contacts_by_company_schema, ["company-id", "contact-id"])
+        singer.write_schema("contacts_by_company", contacts_by_company_schema, ["contact-id"])
 
     with bumble_bee:
         for row in gen_request(STATE, 'companies', url, default_company_params, 'companies', 'has-more', ['offset'],
@@ -1078,7 +1078,7 @@ def discover_schemas():
                                   'metadata': mdata})
     # Load the contacts_by_company schema
     LOGGER.info('Loading schema for contacts_by_company')
-    contacts_by_company = Stream('contacts_by_company', _sync_contacts_by_company, ['company-id', 'contact-id'], None,
+    contacts_by_company = Stream('contacts_by_company', _sync_contacts_by_company, ['contact-id'], None,
                                  'FULL_TABLE')
     schema, mdata = load_discovered_schema(contacts_by_company)
 
