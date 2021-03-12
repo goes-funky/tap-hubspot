@@ -3,7 +3,7 @@ from .deal import Deal
 
 
 class DealByCompany(Associations):
-    tap_stream_id = "deals_by_company"
+    tap_stream_id = "deal_by_companies"
 
     first_resource_name = "DEALS"
     second_resource_name = "COMPANIES"

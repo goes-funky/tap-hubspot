@@ -21,6 +21,7 @@ from singer import (transform,
                     Transformer, _transform_datetime)
 from hubspot import HubSpot
 
+from tap_hubspot.streams.contact_by_companies import ContactByCompany
 from tap_hubspot.streams.deal_by_companies import DealByCompany
 from .transform import transform_row
 from .streams import Product, LineItem, Stream, Deal
@@ -512,8 +513,6 @@ def sync_companies(STATE, ctx):
                 record = request(get_url("companies_detail", company_id=row['companyId'])).json()
                 record = bumble_bee.transform(lift_properties_and_versions(record), schema, mdata)
                 singer.write_record("companies", record, catalog.get('stream_alias'), time_extracted=utils.now())
-                if CONTACTS_BY_COMPANY in ctx.selected_stream_ids:
-                    STATE = _sync_contacts_by_company(STATE, ctx, record['companyId'])
 
     # Don't bookmark past the start of this sync to account for updated records during the sync.
     new_bookmark = min(max_bk_value, current_sync_start)
@@ -891,6 +890,7 @@ def sync_entity(STATE, ctx):
 
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(start.replace(tzinfo=pytz.UTC)))
     singer.write_state(STATE)
+    end_date = datetime.datetime.now().timestamp() * 1000
     data = stream.get_data(str(int(start.timestamp() * 1000)))
     time_extracted = utils.now()
     for row in data:
@@ -950,6 +950,7 @@ STREAMS = [
     LineItem('line_items', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     Deal('deals', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     DealByCompany('deal_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    ContactByCompany('contact_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT)
 ]
 
 
@@ -1076,17 +1077,6 @@ def discover_schemas():
                                   'tap_stream_id': stream.tap_stream_id,
                                   'schema': schema,
                                   'metadata': mdata})
-    # Load the contacts_by_company schema
-    LOGGER.info('Loading schema for contacts_by_company')
-    contacts_by_company = Stream('contacts_by_company', _sync_contacts_by_company, ['contact-id'], None,
-                                 'FULL_TABLE')
-    schema, mdata = load_discovered_schema(contacts_by_company)
-
-    result['streams'].append({'stream': CONTACTS_BY_COMPANY,
-                              'tap_stream_id': CONTACTS_BY_COMPANY,
-                              'schema': schema,
-                              'metadata': mdata})
-
     return result
 
 

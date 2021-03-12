@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "_from": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": [
+            "null",
+            "integer"
+          ]
+        }
+      }
+    },
+    "to": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": [
+              "integer"
+            ]
+          },
+          "type": {
+            "type": [
+              "string"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

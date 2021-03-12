@@ -10,16 +10,15 @@ import abc
 PAGE_MAX_SIZE = 100
 
 
-@attr.s
 class Associations(Resource):
-    first_resource_name = attr.ib(default="DEALS")
-    second_resource_name = attr.ib(default="COMPANIES")
+    first_resource_name = None
+    second_resource_name = None
     replication_key_in_obj = False
 
     def get_data(self, value):
         first_resource = self.get_first_resource()
-        data = first_resource.get_data(value)
-        ids = self.extract_ids(data)
+        parent_data = first_resource.get_data(value)
+        ids = self.extract_ids(parent_data)
         chunks = self.chunks(ids, 100)
         data = []
         for chunk in chunks:
