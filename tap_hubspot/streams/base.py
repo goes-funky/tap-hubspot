@@ -1,5 +1,6 @@
 import attr
 import abc
+from hubspot.crm.objects import Filter, FilterGroup, PublicObjectSearchRequest
 
 PAGE_MAX_SIZE = 100
 
@@ -23,9 +24,14 @@ class Stream(object):
 class Resource(Stream):
     hubspot_client = attr.ib(default=None)
 
-    @abc.abstractmethod
     def get_data(self, value):
-        return []
+        filter_val = Filter(property_name="createdate", operator="GT", value=value)
+        filter_group = FilterGroup(filters=[filter_val])
+        public_object_search_request = PublicObjectSearchRequest(
+            filter_groups=[filter_group]
+        )
+        hubspot_obj = self.get_hubspot_object()
+        return self.fetch_all(hubspot_obj, public_object_search_request)
 
     def fetch_all(self, resource, public_object_search_request, **kwargs):
         public_object_search_request.properties = list(self.extract_inner_properties())
@@ -53,3 +59,8 @@ class Resource(Stream):
                 inner_properties = outer_properties["properties"]
                 return list(inner_properties["properties"].keys())
         return []
+
+    # implement to get hubspot object in the classes u extend
+    @abc.abstractmethod
+    def get_hubspot_object(self):
+        pass

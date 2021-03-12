@@ -32,3 +32,6 @@ class Deal(Resource):
         new_obj["archived"] = obj["archived"]
         new_obj["created_at"] = obj["created_at"]
         return new_obj
+
+    def get_hubspot_object(self):
+        return self.hubspot_client.crm.deals
