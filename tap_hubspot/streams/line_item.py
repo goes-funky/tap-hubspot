@@ -7,10 +7,10 @@ class LineItem(Resource):
     # code is the same as the product but the
     # Filter, FilterGroup, PublicObjectSearchRequest are imported from
     # a different package
-    def get_data(self, value):
-        filter_val = Filter(property_name="createdate", operator="GT", value=value)
-        filter_group = FilterGroup(filters=[filter_val])
-        public_object_search_request = PublicObjectSearchRequest(
-            filter_groups=[filter_group]
-        )
-        return self.fetch_all(self.hubspot_client.crm.line_items, public_object_search_request)
+    tap_stream_id = "line_items"
+    key_properties = ["id"]
+    replication_key = "created_at"
+    replication_method = "INCREMENTAL"
+
+    def get_hubspot_object(self):
+        return self.hubspot_client.crm.line_items
