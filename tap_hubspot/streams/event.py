@@ -28,7 +28,7 @@ class Event(Resource):
                 after = page.paging.next.after
         return results
 
-    @retry(wait=wait_fixed(4), retry=retry_if_exception_type(Exception), stop=stop_after_attempt(3))
+    @retry(wait=wait_fixed(5), retry=retry_if_exception_type(Exception), stop=stop_after_attempt(10))
     def call_api(self, **kwargs):
         return self.get_hubspot_object().events_api.get_page(**kwargs)
 
