@@ -950,9 +950,9 @@ STREAMS = [
     Deal('deals', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     DealByCompany('deal_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     ContactByCompany('contact_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
-    ContactEvent('contact_events', sync_entity, ["id"], None, 'INCREMENTAL', HUBSPOT_CLIENT),
-    ProductEvent('product_events', sync_entity, ["id"], None, 'INCREMENTAL', HUBSPOT_CLIENT),
-    DealEvent('deal_events', sync_entity, ["id"], None, 'INCREMENTAL', HUBSPOT_CLIENT),
+    ContactEvent('contact_events', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    ProductEvent('product_events', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    DealEvent('deal_events', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
 ]
 
 
