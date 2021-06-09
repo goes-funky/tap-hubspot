@@ -24,7 +24,7 @@ from hubspot import HubSpot
 from tap_hubspot.streams.contact_by_companies import ContactByCompany
 from tap_hubspot.streams.deal_by_companies import DealByCompany
 from .transform import transform_row
-from .streams import Product, LineItem, Stream, Deal, ContactEvent, DealEvent,ProductEvent
+from .streams import Product, LineItem, Stream, Deal, ContactEvent, DealEvent, ProductEvent
 
 LOGGER = singer.get_logger()
 SESSION = requests.Session()
@@ -890,7 +890,6 @@ def sync_entity(STATE, ctx):
 
     STATE = singer.write_bookmark(STATE, stream_id, bookmark_key, utils.strftime(start.replace(tzinfo=pytz.UTC)))
     singer.write_state(STATE)
-    end_date = datetime.datetime.now().timestamp() * 1000
     data = stream.get_data(str(int(start.timestamp() * 1000)))
     time_extracted = utils.now()
     for row in data:
@@ -951,9 +950,9 @@ STREAMS = [
     Deal('deals', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     DealByCompany('deal_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
     ContactByCompany('contact_by_companies', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
-    ContactEvent('contact_events', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
-    ProductEvent('product_events', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
-    DealEvent('deal_events', sync_entity, ["id"], 'created_at', 'INCREMENTAL', HUBSPOT_CLIENT),
+    ContactEvent('contact_events', sync_entity, ["id"], None, 'INCREMENTAL', HUBSPOT_CLIENT),
+    ProductEvent('product_events', sync_entity, ["id"], None, 'INCREMENTAL', HUBSPOT_CLIENT),
+    DealEvent('deal_events', sync_entity, ["id"], None, 'INCREMENTAL', HUBSPOT_CLIENT),
 ]
 
 

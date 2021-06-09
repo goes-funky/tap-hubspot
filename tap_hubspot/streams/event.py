@@ -13,6 +13,8 @@ LOGGER = singer.get_logger()
 
 
 class Event(Resource):
+    replication_key_in_obj = False
+
     def get_data(self, value):
         results = []
         for parent_obj in self.get_parent().get_data(value):
@@ -32,6 +34,7 @@ class Event(Resource):
 
     def get_hubspot_object(self):
         return self.hubspot_client.events
+
     @abstractmethod
     def get_parent(self) -> Resource:
         raise Exception("get_parent is not implemented")
