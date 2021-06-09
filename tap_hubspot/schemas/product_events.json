@@ -1,0 +1,36 @@
+{
+  "type": "object",
+  "properties": {
+    "objectId": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "objectType": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "occurredAt": {
+      "type": [
+        "null",
+        "string"
+      ],
+      "format": "date-time"
+    },
+    "eventType": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "id": {
+      "type": [
+        "null",
+        "string"
+      ]
+    }
+  }
+}

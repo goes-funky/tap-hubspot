@@ -15,7 +15,8 @@ setup(name='tap-hubspot',
           'requests==2.20.0',
           'backoff==1.3.2',
           'requests_mock==1.3.0',
-          'hubspot-api-client==3.4.2'
+          'hubspot-api-client==3.7.2',
+          'tenacity==7.0.0'
       ],
       extras_require={
           'dev': [
