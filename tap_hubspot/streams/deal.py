@@ -12,6 +12,7 @@ class Deal(Resource):
     replication_key = "created_at"
     replication_method = "INCREMENTAL"
 
+    # TODO: remove this here ?
     def get_data(self, value):
         filter = Filter(property_name="createdate", operator="GT", value=value)
         filter_group = FilterGroup(filters=[filter])

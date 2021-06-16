@@ -8,6 +8,7 @@ from tenacity import retry_if_exception_type, retry, wait_fixed, stop_after_atte
 
 from .deal import Deal
 from .product import Product
+from .company import Company
 
 LOGGER = singer.get_logger()
 
@@ -65,3 +66,11 @@ class ProductEvent(Event):
 
     def get_object_type(self):
         return 'product'
+
+
+class CompanyEvent(Event):
+    def get_parent(self) -> Resource:
+        return Company(hubspot_client=self.hubspot_client)
+
+    def get_object_type(self):
+        return 'company'
